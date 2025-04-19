@@ -5,5 +5,9 @@ public class UserController {
     private String password;
     private String email;
     private String id;
-    //Here am going to do my sql connection
+
+    
+
+
+    //Here am going to do my sql connection to safe all the users
 }
