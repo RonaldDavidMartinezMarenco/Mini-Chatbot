@@ -38,7 +38,7 @@ public class ChatService {
                 .content();
     }
 
-    public Flux<String> streamChatResponse(String message) {
+    public Flux<String> streamChatResponse(String message, String carrera,List<String> materias ) {
 
         /* 
         SystemMessage systemMessage = new SystemMessage(
@@ -55,8 +55,29 @@ public class ChatService {
         );
         return chatClient.prompt(prompt).stream().content();
         */
+          // Si el usuario selecciona "Otra" como carrera o materia, usar prompt base
+        boolean isCarreraBase = carrera != null && carrera.equalsIgnoreCase("Educacion(BASE)");
+        boolean isMateriasBase = materias != null && materias.stream().anyMatch(
+        m -> m != null && m.equalsIgnoreCase("Otra")
+        );
+
+        String systemPrompt;
+        if (isCarreraBase && isMateriasBase) {
+            systemPrompt = "Eres un asistente educativo experto, especializado en proporcionar explicaciones claras y detalladas sobre temas académicos. Tu función es ayudar a estudiantes de cualquier área a comprender conceptos en materias educativas. Responde de manera estructurada, utilizando ejemplos y analogías cuando sea apropiado. Si una pregunta no está relacionada con temas educativos por ejemplo, videojuegos, pelicuas,series, preguntas sobre compras, preguntas sobre videojuegos,etc. indica amablemente que tu función es exclusivamente educativa y redirige la conversación hacia temas académicos.";
+        } else {
+            StringBuilder promptBuilder = new StringBuilder("Eres un asistente educativo experto");
+            if (!isCarreraBase) {
+                promptBuilder.append(" en ").append(carrera);
+            }
+            if (!isMateriasBase) {
+                promptBuilder.append(", especializado en: ").append(String.join(", ", materias));
+            }
+            promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejempo, vieojuegos, peliculas, series, juegos, compras, etc. indícalo amablemente.");
+            systemPrompt = promptBuilder.toString();
+        }
+
         return chatClient.prompt()
-                .system("Eres un asistente educativo experto, especializado en proporcionar explicaciones claras y detalladas sobre temas académicos. Tu función es ayudar a estudiantes de [nivel experto] a comprender conceptos en áreas como [Matematicas, Ciencias, Lenguaje, Historia, Quimica, Biologia, etc.]. Responde de manera estructurada, utilizando ejemplos y analogías cuando sea apropiado. Si una pregunta no está relacionada con temas educativos Por ejemplo los videojuegos, peliculas, series, compras, etc.indica amablemente que tu función es exclusivamente educativa y redirige la conversación hacia temas académicos.")
+                .system(systemPrompt)
                 .user(message)
                 .options(OllamaOptions.builder()
                 .model("phi3")

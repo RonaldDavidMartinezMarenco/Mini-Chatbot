@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LLM Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .bg-blur {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(6px);
+        }
+        /* Fondo animado gradiente */
+        .animated-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: linear-gradient(120deg, rgba(59,130,246,0.15) 0%, rgba(16,185,129,0.12) 50%, rgba(236,72,153,0.12) 100%);
+            animation: gradientMove 8s ease-in-out infinite alternate;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        /* Animación de fade-in y slide-up */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s cubic-bezier(.23,1.01,.32,1) forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Botón animado */
+        .btn-animated {
+            transition: transform 0.15s cubic-bezier(.4,0,.2,1), box-shadow 0.15s;
+        }
+        .btn-animated:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px 0 rgba(59,130,246,0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans relative">
+    <div class="animated-gradient"></div>
+    <nav class="bg-white bg-opacity-95 p-4 flex justify-between items-center shadow-lg z-10">
+        <div class="text-blue-700 font-extrabold text-2xl tracking-wider drop-shadow-lg">USB AI</div>
+        <div>
+            <a href="/index.html" class="text-blue-700 mr-6 hover:underline font-semibold">Home</a>
+            <a href="/stream.html" class="text-blue-700 hover:underline font-semibold">Chatbot</a>
+        </div>
+    </nav>
+    <main class="flex-1 flex flex-col items-center justify-center z-10">
+        <div class="bg-blur p-10 rounded-3xl shadow-2xl w-full max-w-md mt-10 fade-in-up">
+            <div class="flex mb-6">
+                <button id="show-login" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-2xl font-semibold shadow btn-animated">Login</button>
+                <button id="show-register" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-2xl font-semibold btn-animated">Registro</button>
+            </div>
+            <form id="login-form" class="space-y-5">
+                <input type="text" id="login-username" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Usuario" required>
+                <input type="password" id="login-password" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Contraseña" required>
+                <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2 rounded-full font-bold shadow btn-animated">Iniciar sesión</button>
+                <div class="flex justify-center">
+                    <button type="button" id="forgot-password" class="text-blue-700 hover:underline text-sm mt-2">Olvidé mi contraseña</button>
+                </div>
+            </form>
+            <form id="register-form" class="space-y-5 hidden">
+                <input type="text" id="register-username" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Usuario" required>
+                <input type="email" id="register-email" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Email" required>
+                <input type="password" id="register-password" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Contraseña" required>
+                <select id="register-carrera" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 bg-white" required>
+                    <option value="" disabled selected>Selecciona tu carrera o rol</option>
+                    <option value="Ingeniería Informática">Ingeniería Informática</option>
+                    <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+                    <option value="Ingeniería Civil">Ingeniería Civil</option>
+                    <option value="Biología">Biología</option>
+                    <option value="Ingenieria Química">Química</option>
+                    <option value="Física">Física</option>
+                    <option value="Educación (BASE)">Educacion(BASE)</option>
+                </select>
+                <div>
+                    <label class="block mb-1 text-blue-700 font-semibold">Materias específicas</label>
+                    <div id="materias-chips" class="flex flex-wrap gap-2 mb-2"></div>
+                    <select id="register-materias" multiple class="hidden">
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Programación">Programación</option>
+                        <option value="Bases de Datos">Bases de Datos</option>
+                        <option value="Redes">Redes</option>
+                        <option value="Leyes de Newton">Leyes de Newton</option>
+                        <option value="Química">Química</option>
+                        <option value="Anatomia">Anatomia</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Lenguaje">Lenguaje</option>
+                        <option value="Otra">Otra</option>
+                    </select>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Matemáticas">Matemáticas</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Programación">Programación</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Bases de Datos">Bases de Datos</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Redes">Redes</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Física">Física</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Química">Química</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Biología">Biología</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Historia">Historia</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Lenguaje">Lenguaje</button>
+                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Otra">Otra</button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">Haz clic para seleccionar o quitar materias.</div>
+                    <div class="text-xs text-gray-500 mt-1">Si seleccionas Educacion Base, el Chatbot obtendra un Rol Netamente Educativo (Sin roles especificos).</div>
+                </div>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-full font-bold shadow btn-animated">Registrarse</button>
+            </form>
+            <div id="message" class="mt-4 text-center text-red-600 font-semibold"></div>
+        </div>
+    </main>
+    <script>
+        // Alternar entre login y registro
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showLogin = document.getElementById('show-login');
+        const showRegister = document.getElementById('show-register');
+        const messageDiv = document.getElementById('message');
+        
+        function setActiveTab(isLogin) {
+        if (isLogin) {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            showLogin.classList.add('bg-blue-600', 'text-white');
+            showLogin.classList.remove('bg-gray-200', 'text-gray-700');
+            showRegister.classList.add('bg-gray-200', 'text-gray-700');
+            showRegister.classList.remove('bg-blue-600', 'text-white');
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            showRegister.classList.add('bg-blue-600', 'text-white');
+            showRegister.classList.remove('bg-gray-200', 'text-gray-700');
+            showLogin.classList.add('bg-gray-200', 'text-gray-700');
+            showLogin.classList.remove('bg-blue-600', 'text-white');
+        }
+    }
+
+        
+        showLogin.onclick = () => setActiveTab(true);
+        showRegister.onclick = () => setActiveTab(false);
+
+        // Login
+        loginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            messageDiv.textContent = '';
+            const usernameOrEmail = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            // Permite login por usuario o email
+            let body = {};
+            if (usernameOrEmail.includes('@')) {
+                body = { email: usernameOrEmail, password };
+            } else {
+                body = { username: usernameOrEmail, password };
+            }
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                const user = await res.json();
+                localStorage.setItem('user', JSON.stringify(user));
+                window.location.href = '/stream.html';
+            } else {
+                messageDiv.textContent = 'Usuario o contraseña incorrectos.';
+            }
+        };
+                
+
+    const materiasBtns = document.querySelectorAll('.materia-btn');
+    const materiasChips = document.getElementById('materias-chips');
+    const materiasSelect = document.getElementById('register-materias');
+
+    function updateMateriasChips() {
+        materiasChips.innerHTML = '';
+        Array.from(materiasSelect.selectedOptions).forEach(opt => {
+            const chip = document.createElement('span');
+            chip.className = 'bg-blue-500 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1';
+            chip.textContent = opt.value;
+            const x = document.createElement('button');
+            x.type = 'button';
+            x.innerHTML = '&times;';
+            x.className = 'ml-2 text-white hover:text-red-200 font-bold focus:outline-none';
+            x.onclick = () => {
+                opt.selected = false;
+                updateMateriasChips();
+            };
+            chip.appendChild(x);
+            materiasChips.appendChild(chip);
+        });
+    }
+
+    materiasBtns.forEach(btn => {
+        btn.onclick = () => {
+            const value = btn.getAttribute('data-value');
+            const option = Array.from(materiasSelect.options).find(opt => opt.value === value);
+            if (option.selected) {
+                option.selected = false;
+            } else {
+                option.selected = true;
+            }
+            updateMateriasChips();
+        };
+    });
+
+    materiasSelect.addEventListener('change', updateMateriasChips);
+    updateMateriasChips();
+
+    // Registro
+    registerForm.onsubmit = async (e) => {
+        e.preventDefault();
+        messageDiv.textContent = '';
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const carrera = document.getElementById('register-carrera').value;
+        const materias = Array.from(materiasSelect.selectedOptions).map(opt => opt.value);
+        
+        if (!carrera) {
+        messageDiv.textContent = 'Por favor selecciona tu carrera o rol.';
+        return;
+        }
+
+        
+        const res = await fetch('/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, carrera, materias })
+        });
+        if (res.ok) {
+            messageDiv.textContent = 'Registro exitoso. Ahora puedes iniciar sesión.';
+            registerForm.reset();
+            updateMateriasChips();
+            setActiveTab(true);
+        } else {
+            messageDiv.textContent = 'Error al registrar. ¿Usuario o email ya existen?';
+        }
+    };
+
+    // Olvidé mi contraseña
+    document.getElementById('forgot-password').onclick = () => {
+        alert('Funcionalidad de recuperación de contraseña próximamente.');
+    };
+        
+    function showSectionFromHash() {
+        if (window.location.hash === '#register') {
+                setActiveTab(false);
+        } else {
+                setActiveTab(true);
+            }
+        }
+    window.addEventListener('DOMContentLoaded', showSectionFromHash);
+    window.addEventListener('hashchange', showSectionFromHash);
+    </script>
+</body>
+</html>

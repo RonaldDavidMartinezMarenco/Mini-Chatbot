@@ -18,17 +18,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import com.chatbot.ai_assistant.service.ChatService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
+
+import com.chatbot.ai_assistant.dto.ChatRequest;
 import com.chatbot.ai_assistant.service.*;
 /**
  *
@@ -40,7 +42,7 @@ import com.chatbot.ai_assistant.service.*;
     * Esta clase se encarga de enviar las solicitudes y recibir la respuesta del LLM
  */
 @RestController 
-@CrossOrigin(origins = "http://localhost:3000") //Permite que el servidor de react se comunique con el servidor de spring
+@CrossOrigin(origins = "*") //Permite que el servidor de react se comunique con el servidor de spring
 public class ChatController {
 
     private final ChatService chatService; //Objeto de Spring AI
@@ -49,9 +51,9 @@ public class ChatController {
         this.chatService = chatService;
     }
    
-    @GetMapping("/stream")
-    public Flux<String> chatWithStream(@RequestParam(value = "message") String message) {
-       return chatService.streamChatResponse(message);
+    @PostMapping("/stream")
+    public Flux<String> chatWithStream(@org.springframework.web.bind.annotation.RequestBody ChatRequest req) {
+       return chatService.streamChatResponse(req.getMessage(), req.getCarrera(), req.getMaterias());
     }
     @PostMapping("/clear-memory")
     public void clearMemory() {

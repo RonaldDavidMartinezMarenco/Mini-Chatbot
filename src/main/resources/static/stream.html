@@ -60,8 +60,15 @@
             <div class="flex items-center space-x-4">
                 <a href="index.html" class="text-gray-600 hover:text-gray-800">Home</a>
                 <a href="about.html" class="text-gray-600 hover:text-gray-800">About us</a>
-                <button class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200">Sign in</button>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Register</button>
+                <a href="auth.html#login" id = "login-btn" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200">Sign in</a>
+                <a href="auth.html#register" id = "register-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Register</a>
+                <button id="profile-btn" class="hidden bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold flex items-center space-x-2 hover:bg-blue-200"></button>
+                    <span id="profile-username"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.797.657 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <button id="logout-btn" class="ml-2 bg-red-200 text-red-700 px-2 py-1 rounded hover:bg-red-300">Logout</button>
+                </button>
             </div>
         </div>
     </div>
@@ -109,6 +116,56 @@
     let reader = null;
     let currentRequestID = null;
 
+    // Recuperar usuario desde localStorage
+    let currentUser = { username: "User" };
+    try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            currentUser = JSON.parse(userData);
+        }
+    } catch (e) {
+        // Si hay error, se queda como "User"
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const profileBtn = document.getElementById('profile-btn');
+        const profileUsername = document.getElementById('profile-username');
+        const logoutBtn = document.getElementById('logout-btn');
+        let currentUser = null;
+
+        try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            currentUser = JSON.parse(userData);
+            }
+        } catch (e) {}
+
+        if (currentUser && currentUser.username) {
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (registerBtn) registerBtn.style.display = 'none';
+            if (profileBtn) {
+                profileBtn.classList.remove('hidden');
+                profileUsername.textContent = currentUser.username;
+            }
+        } 
+        else {
+            if (loginBtn) loginBtn.style.display = '';
+            if (registerBtn) registerBtn.style.display = '';
+            if (profileBtn) profileBtn.classList.add('hidden');
+            if(logoutBtn) logoutBtn.style.display = 'none';
+        }
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                localStorage.removeItem('user');
+                window.location.href = "auth.html#login";
+            });
+        }
+    });
+
+
     chatForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -139,13 +196,30 @@
         let botMessageElement = addMessageToChat('Bot', '<div class="spinner"></div>');
         let contentElement = botMessageElement.querySelector('.message-content');
         
+        const userData = localStorage.getItem('user');
+        let carrera = '';
+        let materias = [];
+        if (userData) {
+            const user = JSON.parse(userData);
+            carrera = user.carrera || '';
+            materias = user.materias || [];
+        }
+        const payload = { message, carrera, materias };
+
+
         // Fetch streaming data from the server
         try {
             isProcessing = true;
 
             // IMPORTANTE: Pasar el signal como parámetro separado, no concatenado al URL
-            const response = await fetchStreamWithRetry('/stream?message=' + encodeURIComponent(message), signal );
+            //const response = await fetchStreamWithRetry('/stream?message=' + encodeURIComponent(message), signal );
             
+            const response = await fetch('/stream', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal
+            });
             reader = response.body.getReader();
             contentElement.innerHTML = ''; // Clean the Spinner
             
@@ -212,6 +286,11 @@
     }
 
     function addMessageToChat(sender, content) {
+        let displayName = sender;
+        if(sender == 'User' && currentUser && currentUser.username){
+            displayName = currentUser.username;
+        }
+        
         const messageElement = document.createElement('div');
         messageElement.className = `${sender.toLowerCase()}-message ${sender === 'User' ? 'bg-blue-100' : 'bg-gray-100'} p-3 rounded-lg flex items-start space-x-2`;
 
@@ -220,7 +299,7 @@
 
         messageElement.innerHTML = `
             <div class="flex-1">
-                <div class="font-bold ${sender === 'User' ? 'text-blue-600' : 'text-green-600'}">${sender}:</div>
+                <div class="font-bold ${sender === 'User' ? 'text-blue-600' : 'text-green-600'}">${displayName}:</div>
                 <div class="message-content">${content || '...'}</div>
             </div>
             ${sender === 'Bot' && content && !content.includes('<div class="spinner"></div>') ? `
