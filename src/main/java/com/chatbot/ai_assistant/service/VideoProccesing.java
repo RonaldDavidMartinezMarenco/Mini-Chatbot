@@ -1,4 +1,4 @@
-package com.chatbot.ai_assistant;
+package com.chatbot.ai_assistant.service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.nio.file.Path;
 
 @RestController
-public class VideoController {
+public class VideoProccesing {
     @PostMapping("/upload")
      public ResponseEntity<String> uploadVideo(@RequestParam("video") MultipartFile video) {
         try {

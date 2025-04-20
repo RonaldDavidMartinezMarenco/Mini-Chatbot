@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - USB AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="images/logo.png" type="image/png">
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+    <!-- Navbar -->
+    <div class="bg-white shadow-md">
+        <div class="container mx-auto flex items-center justify-between p-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <div class="bg-gray-800 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    <span class="font-bold text-lg">🤖</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">USB AI</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-gray-800">Home</a>
+                <a href="stream.html" class="text-gray-600 hover:text-gray-800">Chatbot</a>
+                <a href="about.html" class="text-blue-500 font-bold">About Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6 flex-1">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Sobre USB AI</h1>
+        
+        <!-- Central Image -->
+        <div class="flex justify-center mb-8">
+            <div class="rounded-lg w-full md:w-2/3 h-64 flex items-center justify-center">
+                <img src="images/Drake.png" alt="Project Logo" class="h-full w-auto rounded-lg">  
+            </div>
+        </div>
+        
+        <!-- Section: Project Purpose -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Proposito del Proyecto</h2>
+            <p class="text-gray-600 leading-relaxed">
+                El propósito de este proyecto es crear un asistente educativo inteligente, capaz de ayudar a estudiantes y educadores con sus necesidades académicas.
+                USB AI está diseñado para proporcionar respuestas claras y concisas a consultas educativas, haciendo que el aprendizaje sea más accesible e interactivo.
+                Al aprovechar tecnologías de inteligencia artificial avanzadas, este proyecto busca cerrar la brecha entre la educación tradicional y la tecnología moderna.
+                Además, esta iniciativa se alinea con el Objetivo de Desarrollo Sostenible (ODS) 4: Educación de Calidad, promoviendo el acceso equitativo al conocimiento a través de herramientas innovadoras.
+            </p>
+        </div>
+        <!-- Section: Project Information -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">¿Comó lo hicimos?</h2>
+            <p class="text-gray-600 leading-relaxed">
+                Este proyecto fue desarrollado utilizando tecnologías web modernas como <strong> Spring Boot</strong> para el backend y Tailwind CSS para el frontend.
+                El chatbot aprovecha modelos de inteligencia artificial avanzados para brindar asistencia educativa de manera eficiente.
+                Entre las técnicas empleadas, se utilizó un algoritmo de <strong>Zero-Shot Classification</strong> para clasificar las preguntas del usuario sin necesidad de entrenamiento específico previo, lo que permite una mayor versatilidad en las respuestas.
+                Además, se integró un modelo local mediante <strong>Ollama</strong>, lo que garantiza mayor privacidad, bajo tiempo de respuesta y la posibilidad de operar sin conexión a internet.
+            </p>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Placeholder for images -->
+                <div class="rounded-lg h-40 flex items-center justify-center">
+                    <img src="images/spring_ai_logo_with_text.svg" alt="Project Logo" class="h-full w-auto rounded-lg">     
+                </div>
+                <div class="rounded-lg h-40 flex items-center justify-center">
+                    <img src="images/ollama.jpg" alt="Project Logo" class="h-full w-auto rounded-lg">  
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: GitHub Links -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">GitHub Links</h2>
+            <p class="text-gray-600 leading-relaxed">
+                Puedes encontrar el código fuente de este proyecto y otros repositorios relacionados en mi perfil de GitHub. Siéntete libre de explorar, contribuir o dar tu opinión.
+            </p>
+            <div class="mt-4">
+                <a href="https://github.com/RonaldDavidMartinezMarenco?tab=repositories" target="_blank" class="text-blue-500 hover:underline">
+                    My GitHub Profile
+                </a>
+            </div>
+            <div class="mt-2">
+                <a href="https://github.com/RonaldDavidMartinezMarenco/Mini-Chatbot" target="_blank" class="text-blue-500 hover:underline">
+                    Project Repository
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2025 USB AI. All rights reserved.</p>
+    </footer>
+</body>
+</html>
