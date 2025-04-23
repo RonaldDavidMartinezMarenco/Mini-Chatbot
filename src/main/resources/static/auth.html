@@ -74,10 +74,10 @@
                 </div>
             </form>
             <form id="register-form" class="space-y-5 hidden">
-                <input type="text" id="register-username" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Usuario" required>
-                <input type="email" id="register-email" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Email" required>
-                <input type="password" id="register-password" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Contraseña" required>
-                <select id="register-carrera" class="w-full border border-green-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 bg-white" required>
+                <input type="text" id="register-username" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Usuario" required>
+                <input type="email" id="register-email" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Email" required>
+                <input type="password" id="register-password" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Contraseña" required>
+                <select id="register-carrera" class="w-full border border-blue-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" required>
                     <option value="" disabled selected>Selecciona tu carrera o rol</option>
                     <option value="Ingeniería Informática">Ingeniería Informática</option>
                     <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
@@ -85,44 +85,50 @@
                     <option value="Biología">Biología</option>
                     <option value="Ingenieria Química">Química</option>
                     <option value="Física">Física</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Ingeniería Mecatronica">Ingenieria Mecatronica</option>
+                    <option value="Medicina">Medicina</option>
+                    <option value="Biomedica">Biomedica</option>
+                    <option value="Derecho">Derecho</option>
+                    <option value="Economia">Economia</option>
+                    <option value="Diseño Grafico">Diseño Grafico</option>
                     <option value="Educación (BASE)">Educacion(BASE)</option>
                 </select>
                 <div>
                     <label class="block mb-1 text-blue-700 font-semibold">Materias específicas</label>
                     <div id="materias-chips" class="flex flex-wrap gap-2 mb-2"></div>
+                    <div id="materias-btns" class="flex flex-wrap gap-2 mb-2"></div>
                     <select id="register-materias" multiple class="hidden">
-                        <option value="Matemáticas">Matemáticas</option>
-                        <option value="Programación">Programación</option>
-                        <option value="Bases de Datos">Bases de Datos</option>
-                        <option value="Redes">Redes</option>
-                        <option value="Leyes de Newton">Leyes de Newton</option>
-                        <option value="Química">Química</option>
-                        <option value="Anatomia">Anatomia</option>
-                        <option value="Historia">Historia</option>
-                        <option value="Lenguaje">Lenguaje</option>
-                        <option value="Otra">Otra</option>
+                       
                     </select>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Matemáticas">Matemáticas</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Programación">Programación</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Bases de Datos">Bases de Datos</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Redes">Redes</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Física">Física</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Química">Química</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Biología">Biología</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Historia">Historia</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Lenguaje">Lenguaje</button>
-                        <button type="button" class="materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200" data-value="Otra">Otra</button>
-                    </div>
                     <div class="text-xs text-gray-500 mt-1">Haz clic para seleccionar o quitar materias.</div>
                     <div class="text-xs text-gray-500 mt-1">Si seleccionas Educacion Base, el Chatbot obtendra un Rol Netamente Educativo (Sin roles especificos).</div>
                 </div>
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-full font-bold shadow btn-animated">Registrarse</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-green-700 text-white py-2 rounded-full font-bold shadow btn-animated">Registrarse</button>
             </form>
             <div id="message" class="mt-4 text-center text-red-600 font-semibold"></div>
         </div>
     </main>
     <script>
+        const materiasPorCarrera = {
+        "Ingeniería Informática": ["Matemáticas", "Programación", "Bases de Datos", "Redes"],
+        "Ingeniería Electrónica": ["Matemáticas", "Física", "Redes", "Programación"],
+        "Ingeniería Civil": ["Matemáticas", "Física", "Historia"],
+        "Biología": ["Biología", "Química", "Matemáticas"],
+        "Ingenieria Química": ["Química", "Matemáticas", "Física"],
+        "Física": ["Física", "Matemáticas", "Química"],
+        "Marketing": ["Historia", "Lenguaje", "Matemáticas"],
+        "Ingeniería Mecatronica": ["Matemáticas", "Física", "Programación"],
+        "Medicina": ["Biología", "Anatomia", "Química"],
+        "Biomedica": ["Biología", "Química", "Anatomia"],
+        "Derecho": ["Historia", "Lenguaje"],
+        "Economia": ["Matemáticas", "Historia"],
+        "Diseño Grafico": ["Lenguaje", "Historia"],
+        "Educacion(BASE)": ["Matemáticas", "Lenguaje", "Historia", "Biología", "Física", "Química"],
+        "Otra": ["Otra"]
+    };
+        
+
         // Alternar entre login y registro
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
@@ -149,40 +155,78 @@
     }
 
         
-        showLogin.onclick = () => setActiveTab(true);
-        showRegister.onclick = () => setActiveTab(false);
+    showLogin.onclick = () => setActiveTab(true);
+    showRegister.onclick = () => setActiveTab(false);
 
-        // Login
-        loginForm.onsubmit = async (e) => {
-            e.preventDefault();
-            messageDiv.textContent = '';
-            const usernameOrEmail = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            // Permite login por usuario o email
-            let body = {};
-            if (usernameOrEmail.includes('@')) {
-                body = { email: usernameOrEmail, password };
-            } else {
-                body = { username: usernameOrEmail, password };
-            }
-            const res = await fetch('/auth/login', {
+    // Login
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
+        messageDiv.textContent = '';
+        const usernameOrEmail = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        // Permite login por usuario o email
+        let body = {};
+        if (usernameOrEmail.includes('@')) {
+            body = { email: usernameOrEmail, password };
+        } else {
+            body = { username: usernameOrEmail, password };
+        }
+        const res = await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            if (res.ok) {
+        if (res.ok) {
                 const user = await res.json();
                 localStorage.setItem('user', JSON.stringify(user));
                 window.location.href = '/stream.html';
             } else {
+                messageDiv.style.color = 'red';
                 messageDiv.textContent = 'Usuario o contraseña incorrectos.';
             }
         };
                 
-
-    const materiasBtns = document.querySelectorAll('.materia-btn');
-    const materiasChips = document.getElementById('materias-chips');
+    const carreraSelect = document.getElementById('register-carrera');
     const materiasSelect = document.getElementById('register-materias');
+    const materiasBtnsContainer = document.getElementById('materias-btns');
+    const materiasChips = document.getElementById('materias-chips');
+
+    function actualizarMateriasPorCarrera() {
+        const carrera = carreraSelect.value;
+        const materias = materiasPorCarrera[carrera] || ["Otra"];
+
+        // Actualiza el select
+        materiasSelect.innerHTML = '';
+        materias.forEach(materia => {
+            const opt = document.createElement('option');
+            opt.value = materia;
+            opt.textContent = materia;
+            materiasSelect.appendChild(opt);
+        });
+
+        // Actualiza los botones
+        materiasBtnsContainer.innerHTML = '';
+        materias.forEach(materia => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'materia-btn bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200';
+            btn.setAttribute('data-value', materia);
+            btn.textContent = materia;
+            btn.onclick = () => {
+                const option = Array.from(materiasSelect.options).find(opt => opt.value === materia);
+                option.selected = !option.selected;
+                updateMateriasChips();
+                // Cambia el estilo del botón seleccionado
+                btn.classList.toggle('bg-blue-600', option.selected);
+                btn.classList.toggle('text-white', option.selected);
+                btn.classList.toggle('bg-blue-100', !option.selected);
+                btn.classList.toggle('text-blue-700', !option.selected);
+            };
+            materiasBtnsContainer.appendChild(btn);
+        });
+
+        updateMateriasChips();
+    }
 
     function updateMateriasChips() {
         materiasChips.innerHTML = '';
@@ -201,23 +245,22 @@
             chip.appendChild(x);
             materiasChips.appendChild(chip);
         });
-    }
 
-    materiasBtns.forEach(btn => {
-        btn.onclick = () => {
-            const value = btn.getAttribute('data-value');
-            const option = Array.from(materiasSelect.options).find(opt => opt.value === value);
-            if (option.selected) {
-                option.selected = false;
-            } else {
-                option.selected = true;
+        // Actualiza el estilo de los botones según selección
+        Array.from(materiasSelect.options).forEach(option => {
+            const btn = materiasBtnsContainer.querySelector(`[data-value="${option.value}"]`);
+            if (btn) {
+                btn.classList.toggle('bg-blue-600', option.selected);
+                btn.classList.toggle('text-white', option.selected);
+                btn.classList.toggle('bg-blue-100', !option.selected);
+                btn.classList.toggle('text-blue-700', !option.selected);
             }
-            updateMateriasChips();
-        };
-    });
+        });
+        
+    }
+    carreraSelect.addEventListener('change', actualizarMateriasPorCarrera);
+    actualizarMateriasPorCarrera();
 
-    materiasSelect.addEventListener('change', updateMateriasChips);
-    updateMateriasChips();
 
     // Registro
     registerForm.onsubmit = async (e) => {
@@ -241,11 +284,13 @@
             body: JSON.stringify({ username, email, password, carrera, materias })
         });
         if (res.ok) {
+            messageDiv.style.color = 'black';
             messageDiv.textContent = 'Registro exitoso. Ahora puedes iniciar sesión.';
             registerForm.reset();
             updateMateriasChips();
             setActiveTab(true);
         } else {
+            messageDiv.style.color = 'red'
             messageDiv.textContent = 'Error al registrar. ¿Usuario o email ya existen?';
         }
     };

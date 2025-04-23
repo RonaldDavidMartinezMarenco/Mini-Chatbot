@@ -77,7 +77,7 @@ public class ChatController {
         // Crear la solicitud HTTP
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-    
+        
         try {
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, String.class);
     

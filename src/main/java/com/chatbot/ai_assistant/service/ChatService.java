@@ -20,11 +20,12 @@ public class ChatService {
 
     private final ChatClient chatClient;
     private final InMemoryChatMemory memory;
+    private final IntentClassifierService intent;
 
-
-    public ChatService (ChatClient.Builder builder) {
+    public ChatService (ChatClient.Builder builder, IntentClassifierService intent) {
         this.memory = new InMemoryChatMemory();
         this.chatClient = builder.defaultAdvisors(new MessageChatMemoryAdvisor(memory)).build(); //Lo usamos sin memoria momentanemente hasta que tengamos varios chats.
+        this.intent = intent;
     }
     
 
@@ -56,6 +57,14 @@ public class ChatService {
         return chatClient.prompt(prompt).stream().content();
         */
           // Si el usuario selecciona "Otra" como carrera o materia, usar prompt base
+        
+        IntentClassifierService.Classifier tipo = intent.classifyEducationalIntent(message);
+        
+        if(tipo == IntentClassifierService.Classifier.NO_EDUCATIVO)
+        {
+            return Flux.just("Lo siento, solo puedo responder preguntas educativas.");
+        }
+
         boolean isCarreraBase = carrera != null && carrera.equalsIgnoreCase("Educacion(BASE)");
         boolean isMateriasBase = materias != null && materias.stream().anyMatch(
         m -> m != null && m.equalsIgnoreCase("Otra")
@@ -72,7 +81,7 @@ public class ChatService {
             if (!isMateriasBase) {
                 promptBuilder.append(", especializado en: ").append(String.join(", ", materias));
             }
-            promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejempo, vieojuegos, peliculas, series, juegos, compras, etc. indícalo amablemente.");
+            promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejemplo, vieojuegos, peliculas, series, juegos, compras, futbol, apuestas o alguna otra responde que no tienes permitido dar respuestas a ese tipo de preguntas. indícalo amablemente.");
             systemPrompt = promptBuilder.toString();
         }
 
