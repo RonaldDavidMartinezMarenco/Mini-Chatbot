@@ -157,8 +157,9 @@
         }
 
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
+            logoutBtn.addEventListener('click', async function(e) {
                 e.stopPropagation();
+                await fetch('/logout', { method: 'POST' });
                 localStorage.removeItem('user');
                 window.location.href = "auth.html#login";
             });
@@ -199,12 +200,14 @@
         const userData = localStorage.getItem('user');
         let carrera = '';
         let materias = [];
+        let username = '';
         if (userData) {
             const user = JSON.parse(userData);
             carrera = user.carrera || '';
             materias = user.materias || [];
+            username = user.username || '';
         }
-        const payload = { message, carrera, materias };
+        const payload = { message, carrera, materias, username };
 
 
         // Fetch streaming data from the server

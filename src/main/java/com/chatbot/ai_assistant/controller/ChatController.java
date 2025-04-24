@@ -53,12 +53,20 @@ public class ChatController {
    
     @PostMapping("/stream")
     public Flux<String> chatWithStream(@org.springframework.web.bind.annotation.RequestBody ChatRequest req) {
-       return chatService.streamChatResponse(req.getMessage(), req.getCarrera(), req.getMaterias());
+       return chatService.streamChatResponse(req.getMessage(), req.getCarrera(), req.getMaterias(), req.getUsername());
     }
-    @PostMapping("/clear-memory")
+    /*
+     @PostMapping("/clear-memory")
     public void clearMemory() {
         chatService.clearMemory();
     }
+    @PostMapping("/logout")
+    public void logout() {
+        chatService.clearMemory();
+    }
+    
+     */
+  
     
     //We use a text classification zero-shot model
     public String classifyIntent(String message) {

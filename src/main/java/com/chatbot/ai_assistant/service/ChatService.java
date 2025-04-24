@@ -25,6 +25,7 @@ public class ChatService {
     public ChatService (ChatClient.Builder builder, IntentClassifierService intent) {
         this.memory = new InMemoryChatMemory();
         this.chatClient = builder.defaultAdvisors(new MessageChatMemoryAdvisor(memory)).build(); //Lo usamos sin memoria momentanemente hasta que tengamos varios chats.
+        //this.chatClient = builder.build();
         this.intent = intent;
     }
     
@@ -39,7 +40,7 @@ public class ChatService {
                 .content();
     }
 
-    public Flux<String> streamChatResponse(String message, String carrera,List<String> materias ) {
+    public Flux<String> streamChatResponse(String message, String carrera,List<String> materias, String username ) {
 
         /* 
         SystemMessage systemMessage = new SystemMessage(
@@ -77,15 +78,19 @@ public class ChatService {
             StringBuilder promptBuilder = new StringBuilder("Eres un asistente educativo experto");
             if (!isCarreraBase) {
                 promptBuilder.append(" en ").append(carrera);
+
             }
             if (!isMateriasBase) {
                 promptBuilder.append(", especializado en: ").append(String.join(", ", materias));
             }
+            promptBuilder.append(". El usuario se llama exactamente: ").append(username).append(". ");
+            promptBuilder.append("En cada respuesta, saluda o menciona al usuario por su nombre al inicio o al final de tu mensaje. ");
             promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejemplo, vieojuegos, peliculas, series, juegos, compras, futbol, apuestas o alguna otra responde que no tienes permitido dar respuestas a ese tipo de preguntas. indícalo amablemente.");
             systemPrompt = promptBuilder.toString();
         }
 
         return chatClient.prompt()
+                .advisors(advisor -> advisor.param("chat_memory_conversation_id", username))
                 .system(systemPrompt)
                 .user(message)
                 .options(OllamaOptions.builder()
@@ -95,9 +100,10 @@ public class ChatService {
                 .stream()
                 .content();
         }
-
+     /*    
     public void clearMemory() {
         memory.clear(null);
     }
+        */
 
 }

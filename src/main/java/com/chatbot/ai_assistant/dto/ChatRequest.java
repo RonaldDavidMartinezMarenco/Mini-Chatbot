@@ -6,6 +6,7 @@ public class ChatRequest {
     private String message;
     private String carrera;
     private List<String> materias;
+    private String username;
     
     // Getters y setters
     public String getMessage() { return message; }
@@ -14,5 +15,7 @@ public class ChatRequest {
     public void setCarrera(String carrera) { this.carrera = carrera; }
     public List<String> getMaterias() { return materias; }
     public void setMaterias(List<String> materias) { this.materias = materias; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
     
 }
