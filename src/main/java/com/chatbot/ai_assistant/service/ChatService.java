@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-
+//Logic
 @Service
 public class ChatService {
 
@@ -53,7 +53,7 @@ public class ChatService {
             OllamaOptions.builder()
                     .model("phi3")
                     .temperature(0.4)
-                    .build()
+                    .build()|
         );
         return chatClient.prompt(prompt).stream().content();
         */
@@ -73,9 +73,9 @@ public class ChatService {
 
         String systemPrompt;
         if (isCarreraBase && isMateriasBase) {
-            systemPrompt = "Eres un asistente educativo experto, especializado en proporcionar explicaciones claras y detalladas sobre temas académicos. Tu función es ayudar a estudiantes de cualquier área a comprender conceptos en materias educativas. Responde de manera estructurada, utilizando ejemplos y analogías cuando sea apropiado. Si una pregunta no está relacionada con temas educativos por ejemplo, videojuegos, pelicuas,series, preguntas sobre compras, preguntas sobre videojuegos,etc. indica amablemente que tu función es exclusivamente educativa y redirige la conversación hacia temas académicos.";
+            systemPrompt = "Eres un asistente educativo experto, especializado en proporcionar explicaciones claras y detalladas sobre temas académicos. Tu función es ayudar a estudiantes de cualquier área a comprender conceptos en materias educativas. Responde de manera estructurada, utilizando ejemplos y analogías cuando sea apropiado. Si una pregunta no está relacionada con temas educativos por ejemplo, videojuegos, pelicuas,series, preguntas sobre compras, preguntas sobre videojuegos,etc. indica amablemente que tu función es exclusivamente educativa y redirige la conversación hacia temas académicos.(Si no tiene nombre, no lo menciones simplemente.)";
         } else {
-            StringBuilder promptBuilder = new StringBuilder("Eres un asistente educativo experto");
+            StringBuilder promptBuilder = new StringBuilder("Eres un asistente educativo experto, das explicaciones claras y detalladas sobre cuestiones academicas.");
             if (!isCarreraBase) {
                 promptBuilder.append(" en ").append(carrera);
 
@@ -83,9 +83,16 @@ public class ChatService {
             if (!isMateriasBase) {
                 promptBuilder.append(", especializado en: ").append(String.join(", ", materias));
             }
-            promptBuilder.append(". El usuario se llama exactamente: ").append(username).append(". ");
-            promptBuilder.append("En cada respuesta, saluda o menciona al usuario por su nombre al inicio o al final de tu mensaje. ");
-            promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejemplo, vieojuegos, peliculas, series, juegos, compras, futbol, apuestas o alguna otra responde que no tienes permitido dar respuestas a ese tipo de preguntas. indícalo amablemente.");
+            String safeUsername = (username == null || username.isBlank()) ? "estudiante" : username;
+            if(username == null || username.isBlank())
+            {
+                promptBuilder.append(". No menciones ningún nombre en tus respuestas. ");
+            }
+            else{
+                promptBuilder.append(". El usuario se llama exactamente: ").append(safeUsername).append(". ");
+                promptBuilder.append("En cada respuesta, saluda o menciona al usuario por su nombre al inicio o al final de tu mensaje. ");
+                promptBuilder.append(". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejemplo, videojuegos, peliculas, series, juegos, compras, futbol, apuestas o alguna otra responde que no tienes permitido dar respuestas a ese tipo de preguntas. indícalo amablemente.");
+            }
             systemPrompt = promptBuilder.toString();
         }
 
@@ -100,10 +107,11 @@ public class ChatService {
                 .stream()
                 .content();
         }
+
      /*    
     public void clearMemory() {
         memory.clear(null);
-    }
-        */
+    }
+        */
 
 }

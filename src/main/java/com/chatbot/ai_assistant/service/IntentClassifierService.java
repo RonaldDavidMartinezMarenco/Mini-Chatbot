@@ -29,7 +29,7 @@ public class IntentClassifierService {
         String systemPrompt = """
         Responde únicamente con el siguiente JSON:
         {"clasificacion": "EDUCATIVO"} o {"clasificacion": "NO_EDUCATIVO"}
-        Considera mensajes de saludo como "Hola", "¿Cómo estás?", "Hola, ¿cómo estás?", "Gracias", "Hasta luego", "Listo" como EDUCATIVO.
+            Considera mensajes de saludo como "Hola", "¿Cómo estás?", "Hola, ¿cómo estás?", "Gracias", "Hasta luego", "Listo", "si", "no","claro","esta bien","hasta pronto" como EDUCATIVO sin importar si es mayuscula o minuscula.
         """;
 
         String userPrompt = """
@@ -57,5 +57,4 @@ public class IntentClassifierService {
             return Classifier.NO_EDUCATIVO;
         }
             }
-            
 }

@@ -41,6 +41,7 @@ import com.chatbot.ai_assistant.service.*;
 /*
     * Esta clase se encarga de enviar las solicitudes y recibir la respuesta del LLM
  */
+//endpoints managment
 @RestController 
 @CrossOrigin(origins = "*") //Permite que el servidor de react se comunique con el servidor de spring
 public class ChatController {

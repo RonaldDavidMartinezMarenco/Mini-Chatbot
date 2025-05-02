@@ -1,7 +1,7 @@
 package com.chatbot.ai_assistant.dto;
 
 import java.util.List;
-
+//Only transfer data
 public class ChatRequest {
     private String message;
     private String carrera;
