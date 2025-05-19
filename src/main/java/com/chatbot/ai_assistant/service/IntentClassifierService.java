@@ -1,7 +1,8 @@
 package com.chatbot.ai_assistant.service;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.ollama.api.OllamaOptions;
+
+import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.stereotype.Service;
 
 // Zero-Shot-Prompting
@@ -41,8 +42,8 @@ public class IntentClassifierService {
         ClasificacionRespuesta respuesta = chatClient.prompt()
             .system(systemPrompt)
             .user(userPrompt)
-            .options(OllamaOptions.builder()
-                .model("phi3")
+            .options(VertexAiGeminiChatOptions.builder()
+                .model("gemini-2.0-flash-001")
                 .temperature(0.1)
                 .build())
             .call()

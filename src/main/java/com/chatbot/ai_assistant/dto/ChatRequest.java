@@ -7,8 +7,14 @@ public class ChatRequest {
     private String carrera;
     private List<String> materias;
     private String username;
+    private String documentId;
+    private String imageId;
     
     // Getters y setters
+    public String getImageId() { return imageId; }
+    public void setImageId(String imageId) { this.imageId = imageId;}
+    public String getDocumentId(){return documentId;}
+    public void setDocumentId (String documentId){this.documentId = documentId;}
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
     public String getCarrera() { return carrera; }
