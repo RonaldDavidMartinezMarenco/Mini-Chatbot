@@ -6,12 +6,8 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.stereotype.Service;
-import org.springframework.ai.chat.messages.SystemMessage;
-import org.springframework.ai.chat.messages.UserMessage;
 import com.chatbot.ai_assistant.controller.DocumentController;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.*;
-import org.springframework.ai.chat.prompt.*;
+import com.chatbot.ai_assistant.rag.ragService; 
 import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +20,15 @@ public class ChatService {
 
     private final ChatClient chatClient;
     private final IntentClassifierService intent;
-    //ChatMemory chatMemory = new InMemoryChatMemory();
-    //PromptChatMemoryAdvisor chatMemoryAdvisor = new PromptChatMemoryAdvisor(chatMemory);
-     private final Map<String, ChatMemory> userMemories = new ConcurrentHashMap<>();
+    private final Map<String, ChatMemory> userMemories = new ConcurrentHashMap<>();
     private final DocumentController documentController;
+    private final ragService ragService; // <--- INYECTA RagService
 
-    public ChatService(ChatClient.Builder builder, IntentClassifierService intent, DocumentController documentController) {
+    public ChatService(ChatClient.Builder builder, IntentClassifierService intent, DocumentController documentController, ragService ragService) {
         this.documentController = documentController;
         this.chatClient = builder.build();
         this.intent = intent;
+        this.ragService = ragService;
     }
     private ChatMemory getMemoryForUser(String username) {
         String key = (username != null && !username.isBlank()) ? username : "anonymous";
@@ -46,6 +42,10 @@ public class ChatService {
     }
 
     public Flux<String> streamChatResponse(String message, String carrera, List<String> materias, String username, String documentId) {
+
+        if (message == null || message.trim().isEmpty()) {
+        return Flux.just("Por favor, escribe una pregunta o mensaje.");
+        }
 
         String documentContent = getValidDocumentContent(documentId);
 
@@ -86,10 +86,14 @@ public class ChatService {
                         ". Responde de manera clara y estructurada. Si la pregunta no es educativa, por ejemplo, videojuegos, peliculas, series, juegos, compras, futbol, apuestas o alguna otra responde que no tienes permitido dar respuestas a ese tipo de preguntas. indícalo amablemente.");
             }          
         }
+        /* 
         if (documentContent != null && !documentContent.isBlank()) {
                 promptBuilder.append("\n\nEl siguiente documento ha sido proporcionado por el usuario. Úsalo como contexto para responder preguntas:\n");
-                promptBuilder.append(documentContent.substring(0, Math.min(300, documentContent.length())));
+                promptBuilder.append(documentContent.substring(0, Math.min(50, documentContent.length())));
             }
+        */
+        promptBuilder.append(getRelevantDocumentContext(documentId, message, 2)); // top 3 chunks relevantes
+
         String systemPrompt = promptBuilder.toString();
 
         ChatMemory chatMemory = getMemoryForUser(username);
@@ -103,7 +107,7 @@ public class ChatService {
                     .options(VertexAiGeminiChatOptions.builder()
                             .model("gemini-2.0-flash-001")
                             .temperature(0.5)
-                            .maxOutputTokens(250)
+                            .maxOutputTokens(100)
                             .build())
                     .call()
                     .chatResponse()
@@ -112,7 +116,6 @@ public class ChatService {
                     .getText();
 
             //Procesar Streaming
-
             // Split response into smaller chunks 
             String[] chunks = response.split("(?<=[.!?]\\s)");
             
@@ -140,5 +143,20 @@ public class ChatService {
     }
     private boolean isEducational(String text) {
         return intent.classifyEducationalIntent(text) != IntentClassifierService.Classifier.NO_EDUCATIVO;
+    }
+    private String getRelevantDocumentContext(String documentId, String question, int topK) {
+        if (documentId == null || documentId.isBlank()) return "";
+        List<String> relevantChunks = ragService.retrieveRelevantChunks(documentId, question, topK);
+        if (relevantChunks.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n\nFragmentos relevantes del documento proporcionado por el usuario:\n");
+        relevantChunks.forEach(chunk -> sb.append(chunk).append("\n"));
+
+        int totalChars = sb.length();
+        System.out.println("Fragmentos relevantes para el documento " + documentId + ":");
+        relevantChunks.forEach(System.out::println);
+        System.out.println("Total caracteres enviados al prompt: "+totalChars);
+
+        return sb.toString();
     }
 }

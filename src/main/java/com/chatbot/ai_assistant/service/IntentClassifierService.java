@@ -26,7 +26,8 @@ public class IntentClassifierService {
     public record ClasificacionRespuesta(String clasificacion) {}
 
     public Classifier classifyEducationalIntent(String userMessage) {
-                
+
+        String safeMessage = userMessage.length() > 250 ? userMessage.substring(0, 500) : userMessage;        
         String systemPrompt = """
         Responde únicamente con el siguiente JSON:
         {"clasificacion": "EDUCATIVO"} o {"clasificacion": "NO_EDUCATIVO"}
@@ -37,7 +38,7 @@ public class IntentClassifierService {
         Clasifica el siguiente mensaje:
         "%s"
         Respuesta JSON:
-        """.formatted(userMessage);
+        """.formatted(safeMessage);
 
         ClasificacionRespuesta respuesta = chatClient.prompt()
             .system(systemPrompt)

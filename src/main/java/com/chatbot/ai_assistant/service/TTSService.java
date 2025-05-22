@@ -11,10 +11,7 @@ import net.andrewcpu.elevenlabs.builders.SpeechGenerationBuilder;
 import net.andrewcpu.elevenlabs.enums.ElevenLabsVoiceModel;
 import net.andrewcpu.elevenlabs.enums.GeneratedAudioOutputFormat;
 import net.andrewcpu.elevenlabs.enums.StreamLatencyOptimization;
-import net.andrewcpu.elevenlabs.model.request.TextToSpeechRequest;
 import net.andrewcpu.elevenlabs.model.voice.VoiceSettings;
-import net.andrewcpu.elevenlabs.requests.tts.PostTextToSpeechRequest;
-import net.andrewcpu.elevenlabs.requests.tts.PostTextToSpeechStreamedRequest;
 
 
 @Service
