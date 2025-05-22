@@ -91,8 +91,9 @@ public class ChatService {
                 promptBuilder.append("\n\nEl siguiente documento ha sido proporcionado por el usuario. Úsalo como contexto para responder preguntas:\n");
                 promptBuilder.append(documentContent.substring(0, Math.min(50, documentContent.length())));
             }
+                o si es el documento de unisimon-doc aplicar rag si no mandar el contenido completo
         */
-        promptBuilder.append(getRelevantDocumentContext(documentId, message, 2)); // top 3 chunks relevantes
+        promptBuilder.append(getRelevantDocumentContext(documentId, message, 3)); // top 3 chunks relevantes
 
         
         String systemPrompt = promptBuilder.toString();
@@ -109,7 +110,7 @@ public class ChatService {
                     .options(VertexAiGeminiChatOptions.builder()
                             .model("gemini-2.0-flash-001")
                             .temperature(0.5)
-                            .maxOutputTokens(300)
+                            .maxOutputTokens(600)
                             .build())
                     .call()
                     .chatResponse()

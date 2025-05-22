@@ -550,13 +550,13 @@
                     // Inserta el botón como hermano, a la derecha del contenido
                     rowContainer.appendChild(speakBtn);
                 }                
-            }else if(fullText.length > 300)
+            }else if(fullText.length > 610)
             {
                 const rowContainer = contentElement.closest('.flex-row, .flex.flex-row');
                 if (rowContainer) {
                     const info = document.createElement('span');
                     info.className = "text-xs text-gray-400 ml-2";
-                    info.textContent = "🔊 Solo disponible para respuestas cortas (≤300 caracteres)";
+                    info.textContent = "🔊 Solo disponible para respuestas cortas (≤600 caracteres)";
                     rowContainer.appendChild(info);
                 }
             }

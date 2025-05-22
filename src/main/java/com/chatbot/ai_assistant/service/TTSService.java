@@ -16,7 +16,6 @@ import net.andrewcpu.elevenlabs.model.voice.VoiceSettings;
 
 @Service
 public class TTSService {
-    //Coqui tts o Google Cloud TTS 
     private static final String API_KEY = System.getenv("ELEVENLABS_API_KEY");
     private static final String VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // Cambia por tu voiceId preferido
 
