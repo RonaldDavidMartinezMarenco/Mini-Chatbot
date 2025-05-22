@@ -16,6 +16,7 @@ Este proyecto es un asistente educativo inteligente que responde preguntas acad�
 - **Tika Reader** para extracción de texto de documentos
 - **Zero-Shot Classification** para clasificación de intenciones
 - **MySQL** como base de datos (database:ai_asistant)
+- **JINA AI / Vertex AI Embeddings** Modelos para los embeddings de los documentos para llevar a cabo **RAG**
 
 ---
 
