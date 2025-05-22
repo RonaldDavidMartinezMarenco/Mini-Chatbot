@@ -6,12 +6,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import com.chatbot.ai_assistant.rag.model.DocumentChunk;
 
 @Service
 public class ragService {
+
     private final Map<String, List<DocumentChunk>> chunkStore = new ConcurrentHashMap<>();
+    private static final String UNISIMON_EMBEDDINGS_PATH = "src/main/resources/static/documents/unisimon-embeddings.json";
 
     @Autowired
     private EmbeddingService embeddingService;
@@ -49,5 +53,33 @@ public class ragService {
             normB += b[i] * b[i];
         }
         return (float) (dot / (Math.sqrt(normA) * Math.sqrt(normB) + 1e-10));
+    }
+    public void saveUnisimonEmbeddings() {
+        try {
+            List<DocumentChunk> chunks = chunkStore.get("unisimon-doc");
+            if (chunks != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(Paths.get(UNISIMON_EMBEDDINGS_PATH).toFile(), chunks);
+                System.out.println("Embeddings de Unisimon guardados localmente.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error guardando embeddings: " + e.getMessage());
+        }
+    }   
+
+    // Carga los embeddings de unisimon-doc
+    public void loadUnisimonEmbeddings() {
+        try {
+            if (Files.exists(Paths.get(UNISIMON_EMBEDDINGS_PATH))) {
+                ObjectMapper mapper = new ObjectMapper();
+                List<DocumentChunk> chunks = Arrays.asList(
+                    mapper.readValue(Paths.get(UNISIMON_EMBEDDINGS_PATH).toFile(), DocumentChunk[].class)
+                );
+                chunkStore.put("unisimon-doc", chunks);
+                System.out.println("Embeddings de Unisimon cargados localmente.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error cargando embeddings: " + e.getMessage());
+        }
     }
 }

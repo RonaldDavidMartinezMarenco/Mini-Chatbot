@@ -373,7 +373,6 @@
             });
         }
     });
-
     chatForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -393,7 +392,7 @@
         if (!message && !selectedDocumentId) return;
 
         if (!message && selectedDocumentId) {
-            message = "Analiza el documento y dime de que trata. Si el documento tiene alguna pregunta responde esta misma.";
+            message = "Responde preguntas que contenga documento y explica de que trata de manera breve.";
         }
 
         abortController = new AbortController();

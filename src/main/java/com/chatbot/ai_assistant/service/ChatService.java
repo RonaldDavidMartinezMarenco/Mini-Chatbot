@@ -94,7 +94,9 @@ public class ChatService {
         */
         promptBuilder.append(getRelevantDocumentContext(documentId, message, 2)); // top 3 chunks relevantes
 
+        
         String systemPrompt = promptBuilder.toString();
+
 
         ChatMemory chatMemory = getMemoryForUser(username);
         PromptChatMemoryAdvisor chatMemoryAdvisor = new PromptChatMemoryAdvisor(chatMemory);
@@ -107,7 +109,7 @@ public class ChatService {
                     .options(VertexAiGeminiChatOptions.builder()
                             .model("gemini-2.0-flash-001")
                             .temperature(0.5)
-                            .maxOutputTokens(100)
+                            .maxOutputTokens(300)
                             .build())
                     .call()
                     .chatResponse()
@@ -137,7 +139,7 @@ public class ChatService {
         if (documentId == null || documentId.isBlank()) return null;
         String content = documentController.getDocumentContent(documentId);
         if (content != null && !content.isBlank()) {
-            if (!isEducational(content)) return "__NO_EDUCATIVO__";
+            if (!"unisimon-doc".equals(documentId) && !isEducational(content)) return "__NO_EDUCATIVO__";
         }
         return content;
     }

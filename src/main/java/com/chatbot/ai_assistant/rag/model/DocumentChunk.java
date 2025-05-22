@@ -17,4 +17,11 @@ public class DocumentChunk {
     public String getDocumentId() { return documentId; }
     public String getText() { return text; }
     public float[] getEmbedding() { return embedding; }
+
+    public DocumentChunk() {} // Constructor vacío para Jackson
+
+    public void setChunkId(String chunkId) { this.chunkId = chunkId; }
+    public void setDocumentId(String documentId) { this.documentId = documentId; }
+    public void setText(String text) { this.text = text; }
+    public void setEmbedding(float[] embedding) { this.embedding = embedding; }
 }

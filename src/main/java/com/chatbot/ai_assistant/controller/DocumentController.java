@@ -64,10 +64,14 @@ public class DocumentController
             List<Document> docs = reader.read();
             String content = docs.stream().map(Document::getText).collect(Collectors.joining("\n"));
 
+
             // Guarda el contenido en el store y lo indexa
             documentStore.put("unisimon-doc", content);
-            ragService.indexDocument("unisimon-doc", content);
-
+            ragService.loadUnisimonEmbeddings();
+            if(ragService.retrieveRelevantChunks("unisimon-doc", "test", 1).isEmpty()){
+                ragService.indexDocument("unisimon-doc", content);
+                ragService.saveUnisimonEmbeddings();
+            }
             System.out.println("Documento Unisimon RAG cargado e indexado correctamente.");
         } catch (Exception e) {
             System.err.println("Error cargando el documento Unisimon RAG: " + e.getMessage());
