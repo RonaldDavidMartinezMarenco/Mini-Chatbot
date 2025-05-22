@@ -98,7 +98,6 @@ public class ChatService {
         
         String systemPrompt = promptBuilder.toString();
 
-
         ChatMemory chatMemory = getMemoryForUser(username);
         PromptChatMemoryAdvisor chatMemoryAdvisor = new PromptChatMemoryAdvisor(chatMemory);
         //Retornar Respuesta

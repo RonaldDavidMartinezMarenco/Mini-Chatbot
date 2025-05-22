@@ -15,7 +15,7 @@ public class TTSController {
 
     @GetMapping("/speak")
     public ResponseEntity<byte[]> speak(@RequestParam String text) {
-        if (text == null || text.length() > 600) {
+        if (text == null || text.length() > 710) {
             return ResponseEntity.badRequest().body(null);
         }
         byte[] audio = ttsService.synthesize(text);

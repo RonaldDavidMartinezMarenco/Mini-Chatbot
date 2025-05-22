@@ -239,7 +239,11 @@
             li.className = `flex items-center justify-between p-2 rounded cursor-pointer border ${selectedDocumentId === doc.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-100'}`;
             li.textContent = doc.name;
             li.onclick = () => {
-                selectedDocumentId = doc.id;
+                if(selectedDocumentId === doc.id){
+                    selectedDocumentId = null; 
+                }else{
+                    selectedDocumentId = doc.id;
+                }
                 renderDocumentList();
             };
             // Botón para quitar documento
@@ -531,7 +535,7 @@
                 contentElement.innerHTML = renderMarkdown(fullText);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-            if (fullText.trim() && fullText.length <= 300) {
+            if (fullText.trim() && fullText.length <= 710) {
                 // Elimina botón anterior si existe (por si hay re-stream)
                 const oldBtn = contentElement.parentElement.querySelector('.speak-button');
                 if (oldBtn) oldBtn.remove();
@@ -550,7 +554,7 @@
                     // Inserta el botón como hermano, a la derecha del contenido
                     rowContainer.appendChild(speakBtn);
                 }                
-            }else if(fullText.length > 610)
+            }else if(fullText.length > 710)
             {
                 const rowContainer = contentElement.closest('.flex-row, .flex.flex-row');
                 if (rowContainer) {
