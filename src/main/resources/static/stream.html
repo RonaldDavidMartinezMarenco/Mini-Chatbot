@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="icon" href="images/logo.png" type="image/png">
+    
+    <!-- ... otros elementos existentes ... -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+   
     <style>
             /* Títulos */
         .message-content h1, .message-content h2, .message-content h3 {
@@ -86,6 +92,31 @@
             }
             input:checked + div + .dot {
                 transform: translateX(1.25rem);
+        }
+
+        /* Estilos para ecuaciones */
+        .katex-display {
+            margin: 1em 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.5em 0;
+        }
+
+        .katex {
+            font-size: 1.1em;
+        }
+
+        .katex-display > .katex {
+            display: inline-block;
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .katex-display > .katex > .katex-html {
+            display: block;
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
         }
     </style>
 </head>
@@ -489,52 +520,74 @@
             fetch('/clear-memory', { method: 'POST' });
         });
 
-        function renderMarkdown(markdownText) {
-            // Convierte el markdown a HTML
-            let html = marked.parse(markdownText);
+    function renderMarkdown(markdownText) {
+        // Convierte el markdown a HTML
+        let html = marked.parse(markdownText);
 
-            // Crea un contenedor temporal para manipular el HTML
-            const container = document.createElement('div');
-            container.innerHTML = html;
+        // Crea un contenedor temporal para manipular el HTML
+        const container = document.createElement('div');
+        container.innerHTML = html;
 
-            // Aplica clases de Tailwind a los elementos relevantes
-            container.querySelectorAll('strong').forEach(el => {
-                el.classList.add('text-blue-600', 'font-bold', 'text-lg');
+        // Procesa las ecuaciones en línea y en bloque
+        container.querySelectorAll('p').forEach(p => {
+            // Procesa ecuaciones en línea (entre $...$)
+            p.innerHTML = p.innerHTML.replace(/\$([^\$]+)\$/g, (match, equation) => {
+                try {
+                    return katex.renderToString(equation, {
+                        displayMode: false,
+                        throwOnError: false
+                    });
+                } catch (e) {
+                    console.error('Error rendering inline equation:', e);
+                    return match;
+                }
             });
-            container.querySelectorAll('ul').forEach(el => {
-                el.classList.add('list-disc', 'pl-6', 'mb-2');
+        });
+
+        // Procesa ecuaciones en bloque (entre $$...$$)
+        container.querySelectorAll('p').forEach(p => {
+            p.innerHTML = p.innerHTML.replace(/\$\$([^\$]+)\$\$/g, (match, equation) => {
+                try {
+                    return katex.renderToString(equation, {
+                        displayMode: true,
+                        throwOnError: false
+                    });
+                } catch (e) {
+                    console.error('Error rendering block equation:', e);
+                    return match;
+                }
             });
-            container.querySelectorAll('ol').forEach(el => {
+        });
+
+        // Aplica clases de Tailwind a los elementos relevantes
+        container.querySelectorAll('strong').forEach(el => {
+            el.classList.add('text-blue-600', 'font-bold', 'text-lg');
+        });
+        container.querySelectorAll('ul').forEach(el => {
+            el.classList.add('list-disc', 'pl-6', 'mb-2');
+        });
+        container.querySelectorAll('ol').forEach(el => {
             el.classList.add('list-decimal', 'pl-6', 'mb-2'); 
-            });
-            container.querySelectorAll('li').forEach(el => {
-                el.classList.add('mb-1');
-            });
-            container.querySelectorAll('h1').forEach(el => {
-                el.classList.add('text-2xl', 'font-bold', 'mb-2');
-            });
-            container.querySelectorAll('h2').forEach(el => {
-                el.classList.add('text-xl', 'font-bold', 'mb-2');
-            });
-            
-            
-            container.querySelectorAll('pre').forEach(pre => {
-            const codes = pre.querySelectorAll('code');
-            if (codes.length > 1) {
-                let codeText = '';
-                codes.forEach(code => {
-                    codeText += code.textContent + '\n';
-                    code.remove();
-                });
-                const newCode = document.createElement('code');
-                newCode.textContent = codeText.trimEnd();
-                pre.appendChild(newCode);
-            }
-            });
-            container.querySelectorAll('pre code').forEach(code => {
-            });
+        });
+        container.querySelectorAll('li').forEach(el => {
+            el.classList.add('mb-1');
+        });
+        container.querySelectorAll('h1').forEach(el => {
+            el.classList.add('text-2xl', 'font-bold', 'mb-2');
+        });
+        container.querySelectorAll('h2').forEach(el => {
+            el.classList.add('text-xl', 'font-bold', 'mb-2');
+        });
 
-            return container.innerHTML;
+        // Añade estilos para las ecuaciones
+        container.querySelectorAll('.katex-display').forEach(el => {
+            el.classList.add('my-4', 'overflow-x-auto');
+        });
+        container.querySelectorAll('.katex').forEach(el => {
+            el.classList.add('text-blue-600');
+        });
+
+        return container.innerHTML;
     }   
 
     async function processStream(reader, contentElement) {
