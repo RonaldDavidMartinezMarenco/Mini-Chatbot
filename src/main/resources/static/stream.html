@@ -236,26 +236,39 @@
         list.innerHTML = '';
         uploadedDocuments.forEach(doc => {
             const li = document.createElement('li');
-            li.className = `flex items-center justify-between p-2 rounded cursor-pointer border ${selectedDocumentId === doc.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-100'}`;
+            li.className = `flex items-center justify-between p-2 rounded cursor-pointer border ${
+                !isUnisimonRagActive && selectedDocumentId === doc.id 
+                    ? 'border-blue-500 bg-blue-50' 
+                    : 'border-gray-200 hover:bg-gray-100'
+            } ${isUnisimonRagActive ? 'opacity-50 pointer-events-none' : ''}`;
             li.textContent = doc.name;
-            li.onclick = () => {
-                if(selectedDocumentId === doc.id){
-                    selectedDocumentId = null; 
-                }else{
-                    selectedDocumentId = doc.id;
-                }
-                renderDocumentList();
-            };
+
+            if(!isUnisimonRagActive)
+            {
+                li.onclick = () => {
+                    if(selectedDocumentId === doc.id){
+                        selectedDocumentId = null; 
+                    }else{
+                        selectedDocumentId = doc.id;
+                    }
+                    renderDocumentList();
+                };
+            }
             // Botón para quitar documento
             const removeBtn = document.createElement('button');
             removeBtn.textContent = '×';
-            removeBtn.className = 'ml-2 text-red-500 hover:text-red-700 font-bold';
-            removeBtn.onclick = (e) => {
-                e.stopPropagation();
-                uploadedDocuments = uploadedDocuments.filter(d => d.id !== doc.id);
-                if (selectedDocumentId === doc.id) selectedDocumentId = null;
-                renderDocumentList();
-            };
+            removeBtn.className = `ml-2 text-red-500 hover:text-red-700 font-bold ${
+                isUnisimonRagActive ? 'opacity-50 pointer-events-none' : ''
+            }`;
+            if(!isUnisimonRagActive)
+            {
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    uploadedDocuments = uploadedDocuments.filter(d => d.id !== doc.id);
+                    if (selectedDocumentId === doc.id) selectedDocumentId = null;
+                    renderDocumentList();
+                };
+            }
             li.appendChild(removeBtn);
             list.appendChild(li);
         });
@@ -560,7 +573,7 @@
                 if (rowContainer) {
                     const info = document.createElement('span');
                     info.className = "text-xs text-gray-400 ml-2";
-                    info.textContent = "🔊 Solo disponible para respuestas cortas (≤600 caracteres)";
+                    info.textContent = "🔊 Solo disponible para respuestas cortas (≤710 caracteres)";
                     rowContainer.appendChild(info);
                 }
             }
